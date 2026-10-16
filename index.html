@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Destroy All Humans — Browser Homage | Saucer Invasion</title>
+<meta name="description" content="A fully playable 3D Destroy All Humans-inspired browser game. Pilot the saucer, zap humans, abduct DNA, flatten the town.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛸</text></svg>">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}
+</script>
+</head>
+<body>
+<div id="app">
+  <div id="hud">
+    <div id="vignette"></div>
+    <div id="abductFlash"></div>
+    <div id="crosshair"></div>
+    <div class="topbar">
+      <div id="objective" class="panel">
+        <h3 id="mName">Mission 1 — Harvest</h3>
+        <h2 id="mTitle">Collect DNA</h2>
+        <p id="mDesc">Abduct or vaporize humans. Fill the DNA quota.</p>
+        <div class="prog"><i id="mProg"></i></div>
+      </div>
+      <div id="stats">
+        <div class="stat panel" id="dna"><b id="dnaVal">0</b><span>🧬 DNA</span></div>
+        <div class="stat panel"><b id="killVal">0</b><span>☠️ Kills</span></div>
+        <div class="stat panel" id="alert"><b id="alertVal">☆☆☆☆☆</b><span>Alert</span></div>
+        <div class="stat panel"><b id="timeVal">0:00</b><span>Time</span></div>
+      </div>
+    </div>
+    <div id="fps"></div>
+    <div id="feed"></div>
+    <div id="healthwrap">
+      <div class="panel">
+        <div class="barlabel"><span id="modeLabel">👽 CRYPTO (on foot)</span><span id="posLabel"></span></div>
+        <div class="barlabel"><span>INTEGRITY</span><span id="hpTxt"></span></div>
+        <div class="bar" id="hp"><i style="width:100%"></i></div>
+        <div class="barlabel"><span>SHIELD</span><span id="shTxt"></span></div>
+        <div class="bar" id="sh"><i style="width:100%"></i></div>
+        <div class="barlabel"><span id="fuelLabel">JETPACK</span><span id="fuelTxt"></span></div>
+        <div class="bar" id="fuel"><i style="width:100%"></i></div>
+      </div>
+    </div>
+    <div id="weapons">
+      <div class="wslot" id="w0"><b>1 · Zap-O-Matic</b><span>LMB — lightning</span></div>
+      <div class="wslot" id="w1"><b>2 · Disintegrator</b><span>LMB — plasma orb</span></div>
+      <div class="wslot" id="w2"><b>3 · Psychokinesis</b><span>RMB hold — lift & throw</span></div>
+    </div>
+    <canvas id="minimap" width="170" height="170"></canvas>
+    <div id="hint"></div>
+  </div>
+
+  <div id="menu" class="screen">
+    <div class="card">
+      <div class="ufo">🛸</div>
+      <h1>DESTROY <span class="green">ALL HUMANS</span></h1>
+      <h2>★ Saucer Invasion · Browser Homage ★</h2>
+      <p>It is 1959. The Furon Empire sends <b>Crypto-137</b> to the puny town of <b>Rockwell</b> to harvest human DNA. The Majestic agency and the U.S. Army stand in your way. Show no mercy.</p>
+      <div class="missions">
+        <div>🧬 <b>M1 Harvest:</b> collect 800 DNA by abducting / vaporizing lifeforms</div>
+        <div>🔥 <b>M2 Crackdown:</b> survive the Army — destroy 6 armor + down 12 troops</div>
+        <div>💥 <b>M3 Annihilation:</b> raze 18 buildings &amp; defeat the Majestic Commander</div>
+      </div>
+      <div class="controls-grid">
+        <div><b>W A S D</b> move / fly saucer</div><div><b>Mouse</b> look &amp; aim (click to lock)</div>
+        <div><b>LMB</b> fire current weapon</div><div><b>RMB (hold)</b> psychokinesis / abduct beam</div>
+        <div><b>1 / 2 / 3</b> Zap · Disintegrator · PK</div><div><b>Space / C</b> jetpack up / saucer up-down</div>
+        <div><b>Shift</b> sprint / saucer boost</div><div><b>F</b> enter / exit saucer</div>
+        <div><b>Q</b> saucer shockwave repulse</div><div><b>P / Esc</b> pause</div>
+      </div>
+      <button class="btn" id="playBtn">🛸 START INVASION</button>
+      <button class="btn ghost" id="howBtn">HOW TO PLAY</button>
+      <p id="loadtip">Desktop + mouse recommended · WebGL · procedural 50s town · no downloads<br>This is an unofficial parody homage. Not affiliated with THQ Nordic.</p>
+    </div>
+  </div>
+
+  <div id="how" class="screen hidden">
+    <div class="card">
+      <h1 style="font-size:30px">FIELD MANUAL</h1>
+      <div class="controls-grid">
+        <div>👽 <b>On foot:</b> Zap-O-Matic never runs out. Disintegrator lobs plasma that melts groups. PK grabs humans, cows, cars &amp; soldiers — release RMB to hurl them.</div>
+        <div>🛸 <b>Saucer:</b> LMB = Death Ray (melts buildings/tanks). Hold RMB = Abducto-beam (sucks up humans &amp; cows for bonus DNA). Q = shockwave that flings everything. F = land &amp; exit.</div>
+        <div>🧬 <b>DNA</b> heals you slightly and is your score. Abduction gives 2× DNA vs killing.</div>
+        <div>🚨 <b>Alert:</b> each atrocity raises the alert. Army sends GIs → cops → tanks → AA flak → Majestic agents. Lay low or fight through.</div>
+        <div>💡 <b>Tip:</b> your saucer is parked in the pasture south of town. Walk to it and press F. Cows give easy early DNA.</div>
+        <div>❤️ <b>Survival:</b> shields regen. If on-foot health hits 0 you auto-recall to the saucer. If the saucer hull hits 0 — game over.</div>
+      </div>
+      <button class="btn" id="backBtn">GOT IT</button>
+    </div>
+  </div>
+
+  <div id="pause" class="screen hidden">
+    <div class="card">
+      <h1 style="font-size:34px">PAUSED</h1>
+      <p>The invasion waits for no Furon. Well — except now.</p>
+      <button class="btn" id="resumeBtn">RESUME</button>
+      <button class="btn ghost" id="restartBtn">RESTART</button>
+    </div>
+  </div>
+
+  <div id="gameover" class="screen hidden">
+    <div class="card">
+      <h1 style="font-size:36px">💀 <span class="green">INVASION FAILED</span></h1>
+      <h2 id="goSub">Crypto was turned into area-51 confetti</h2>
+      <p id="goStats"></p>
+      <button class="btn" id="retryBtn">RETRY INVASION</button>
+    </div>
+  </div>
+
+  <div id="victory" class="screen hidden">
+    <div class="card">
+      <div class="ufo">🧬</div>
+      <h1 style="font-size:36px">EARTH <span class="green">HARVESTED</span></h1>
+      <h2>Rockwell has been pacified. The Furon live on.</h2>
+      <p id="winStats"></p>
+      <button class="btn" id="continueBtn">CONTINUE FREE ROAM</button>
+      <button class="btn ghost" id="againBtn">PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <div id="brief" class="screen hidden">
+    <div class="card">
+      <h2 id="bKicker">Mission complete</h2>
+      <h1 id="bTitle" style="font-size:32px">NEXT PHASE</h1>
+      <p id="bDesc"></p>
+      <button class="btn" id="briefBtn">DEPLOY</button>
+    </div>
+  </div>
+</div>
+<script type="module" src="game.js"></script>
+</body>
+</html>

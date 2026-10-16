@@ -1,0 +1,67 @@
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#060a14;font-family:'Trebuchet MS',Verdana,system-ui,sans-serif;color:#e8f4ff;user-select:none}
+#app{position:fixed;inset:0}
+canvas.game{position:absolute;inset:0;display:block}
+#hud{position:absolute;inset:0;pointer-events:none;z-index:10}
+#crosshair{position:absolute;left:50%;top:50%;width:26px;height:26px;transform:translate(-50%,-50%);opacity:.95}
+#crosshair:before,#crosshair:after{content:"";position:absolute;background:#7dfffa;box-shadow:0 0 8px #00ffcc}
+#crosshair:before{left:12px;top:2px;width:2px;height:22px}
+#crosshair:after{left:2px;top:12px;width:22px;height:2px}
+#crosshair.abduct:before,#crosshair.abduct:after{background:#b6ff5e;box-shadow:0 0 10px #7CFC00}
+.topbar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-start;padding:10px 14px;gap:10px}
+.panel{background:rgba(6,20,28,.72);border:1px solid rgba(0,255,204,.35);border-radius:10px;padding:8px 12px;backdrop-filter:blur(6px);box-shadow:0 0 18px rgba(0,255,204,.15)}
+#objective{max-width:420px}
+#objective h3{font-size:13px;letter-spacing:1px;color:#7dfffa;text-transform:uppercase}
+#objective h2{font-size:17px;margin:2px 0;color:#fff}
+#objective p{font-size:13px;color:#cfe9ff}
+#objective .prog{height:8px;background:#0b2b33;border-radius:99px;margin-top:6px;overflow:hidden;border:1px solid rgba(255,255,255,.15)}
+#objective .prog i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#00ffcc,#7CFC00);transition:width .3s}
+#stats{display:flex;gap:10px;align-items:stretch}
+.stat{min-width:110px;text-align:center}
+.stat b{display:block;font-size:20px;color:#fff}
+.stat span{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#8be9d9}
+#dna b{color:#b6ff5e;text-shadow:0 0 10px #7CFC00}
+#alert b{color:#ffb02e}
+#healthwrap{position:absolute;left:14px;bottom:14px;width:320px}
+.bar{height:14px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.25);border-radius:99px;overflow:hidden;margin:4px 0}
+.bar>i{display:block;height:100%;transition:width .15s}
+#hp>i{background:linear-gradient(90deg,#ff2e63,#ff9a3d)}
+#sh>i{background:linear-gradient(90deg,#00d4ff,#7dfffa)}
+#fuel>i{background:linear-gradient(90deg,#b16bff,#ff6bf3)}
+.barlabel{font-size:11px;letter-spacing:1px;display:flex;justify-content:space-between;color:#cfe9ff}
+#weapons{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+.wslot{width:150px;text-align:center;padding:6px 8px;font-size:12px;border-radius:10px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.18)}
+.wslot.active{border-color:#00ffcc;box-shadow:0 0 14px rgba(0,255,204,.5);background:rgba(0,60,60,.7)}
+.wslot b{display:block;font-size:13px;color:#fff}
+.wslot span{color:#8be9d9;font-size:11px}
+#feed{position:absolute;right:14px;top:90px;width:270px;display:flex;flex-direction:column;gap:6px;font-size:13px}
+#feed div{background:rgba(0,0,0,.6);border-left:3px solid #00ffcc;padding:6px 8px;border-radius:6px;animation:slidein .25s}
+#feed div.bad{border-color:#ff2e63}
+#feed div.good{border-color:#7CFC00}
+@keyframes slidein{from{transform:translateX(20px);opacity:0}to{transform:none;opacity:1}}
+#minimap{position:absolute;right:14px;bottom:14px;width:170px;height:170px;border-radius:12px;border:1px solid rgba(0,255,204,.4);background:rgba(0,10,15,.75);overflow:hidden}
+#hint{position:absolute;bottom:112px;left:50%;transform:translateX(-50%);font-size:13px;background:rgba(0,0,0,.6);padding:6px 12px;border-radius:99px;border:1px solid rgba(255,255,255,.2);color:#ffe9a8}
+#vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,rgba(255,0,40,.55) 100%);opacity:0;transition:opacity .2s}
+#abductFlash{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 40%,rgba(124,252,0,.35) 100%);opacity:0}
+.screen{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 30%,rgba(0,80,80,.85),rgba(2,6,14,.94));backdrop-filter:blur(8px);pointer-events:auto}
+.screen.hidden{display:none}
+.card{width:min(760px,92vw);max-height:92vh;overflow:auto;background:linear-gradient(180deg,#0b1e26,#060f16);border:1px solid #00ffcc;border-radius:18px;padding:28px 30px;box-shadow:0 0 60px rgba(0,255,204,.25),inset 0 0 40px rgba(0,255,204,.06);text-align:center}
+.card h1{font-size:44px;line-height:1;letter-spacing:1px;color:#fff;text-shadow:0 0 20px #00ffcc,0 0 40px #00ffcc}
+.card h1 .green{color:#b6ff5e;text-shadow:0 0 20px #7CFC00}
+.card h2{color:#7dfffa;font-size:16px;letter-spacing:3px;text-transform:uppercase;margin:6px 0 12px}
+.card p{color:#cfe9ff;font-size:14.5px;line-height:1.55;margin:8px 0}
+.ufo{font-size:64px;filter:drop-shadow(0 0 18px #00ffcc);animation:hover 2.2s ease-in-out infinite}
+@keyframes hover{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.btn{display:inline-block;margin:8px 6px 0;padding:13px 28px;font-size:17px;font-weight:800;letter-spacing:1px;color:#04110f;background:linear-gradient(180deg,#7dfffa,#00ffcc);border:0;border-radius:99px;cursor:pointer;box-shadow:0 6px 24px rgba(0,255,204,.5);transition:transform .1s}
+.btn:hover{transform:scale(1.05)}
+.btn.ghost{background:transparent;color:#7dfffa;border:1px solid #00ffcc;box-shadow:none}
+.controls-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;text-align:left;margin:14px auto;max-width:600px;font-size:13.5px;background:rgba(0,0,0,.35);padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.12)}
+.controls-grid b{color:#7dfffa;background:rgba(255,255,255,.08);padding:2px 8px;border-radius:6px;border:1px solid rgba(255,255,255,.2);font-family:monospace;white-space:nowrap}
+.missions{text-align:left;margin:12px 0;font-size:14px}
+.missions div{padding:8px 10px;border-radius:8px;margin:4px 0;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+.missions div.done{border-color:#7CFC00;color:#b6ff5e}
+.missions div.active{border-color:#00ffcc;background:rgba(0,255,204,.1)}
+#loadtip{font-size:12px;color:#6fa9a0;margin-top:10px}
+.kbd{font-family:monospace}
+#fps{position:absolute;left:14px;top:90px;font-size:11px;color:#5b8a86}
+@media(max-width:800px){.controls-grid{grid-template-columns:1fr}#objective{max-width:56vw}#healthwrap{width:44vw}.wslot{width:110px}}
